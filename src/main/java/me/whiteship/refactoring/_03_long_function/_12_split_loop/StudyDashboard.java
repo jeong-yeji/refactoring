@@ -22,7 +22,7 @@ public class StudyDashboard {
 
     public StudyDashboard(int totalNumberOfEvents) {
         this.totalNumberOfEvents = totalNumberOfEvents;
-        participants = new CopyOnWriteArrayList<>();
+        participants = new CopyOnWriteArrayList<>(); // Concurrency에 safe한 Collection. 새로운 element가 추가될 때 기존에 있는걸 copy해서 새로 만듦
         firstParticipantsForEachEvent = new Participant[this.totalNumberOfEvents];
     }
 
@@ -32,8 +32,13 @@ public class StudyDashboard {
     }
 
     private void print() throws IOException, InterruptedException {
-        GHRepository ghRepository = getGhRepository();
+        checkGithubIssues(getGhRepository());
+        new StudyPrinter(this.totalNumberOfEvents, this.participants).execute();
+        printFirstParticipants();
+    }
 
+    private void checkGithubIssues(GHRepository ghRepository) throws InterruptedException {
+        // Multi Thread Programming
         ExecutorService service = Executors.newFixedThreadPool(8);
         CountDownLatch latch = new CountDownLatch(totalNumberOfEvents);
 
@@ -44,21 +49,9 @@ public class StudyDashboard {
                 public void run() {
                     try {
                         GHIssue issue = ghRepository.getIssue(eventId);
-                        List<GHIssueComment> comments = issue.getComments();
-                        Date firstCreatedAt = null;
-                        Participant first = null;
-
-                        for (GHIssueComment comment : comments) {
-                            Participant participant = findParticipant(comment.getUserName(), participants);
-                            participant.setHomeworkDone(eventId);
-
-                            if (firstCreatedAt == null || comment.getCreatedAt().before(firstCreatedAt)) {
-                                firstCreatedAt = comment.getCreatedAt();
-                                first = participant;
-                            }
-                        }
-
-                        firstParticipantsForEachEvent[eventId - 1] = first;
+                        List<GHIssueComment> comments = issue.getComments(); //
+                        checkHomework(comments, participants, eventId);
+                        firstParticipantsForEachEvent[eventId - 1] = findFrist(comments, participants);
                         latch.countDown();
                     } catch (IOException e) {
                         throw new IllegalArgumentException(e);
@@ -69,9 +62,26 @@ public class StudyDashboard {
 
         latch.await();
         service.shutdown();
+    }
 
-        new StudyPrinter(this.totalNumberOfEvents, this.participants).execute();
-        printFirstParticipants();
+    private Participant findFrist(List<GHIssueComment> comments, List<Participant> participants) throws IOException {
+        Date firstCreatedAt = null;
+        Participant first = null;
+        for (GHIssueComment comment : comments) {
+            Participant participant = findParticipant(comment.getUserName(), participants); //
+            if (firstCreatedAt == null || comment.getCreatedAt().before(firstCreatedAt)) {
+                firstCreatedAt = comment.getCreatedAt();
+                first = participant;
+            }
+        }
+        return first;
+    }
+
+    private void checkHomework(List<GHIssueComment> comments, List<Participant> participants, int eventId) {
+        for (GHIssueComment comment : comments) {
+            Participant participant = findParticipant(comment.getUserName(), participants); //
+            participant.setHomeworkDone(eventId);
+        }
     }
 
     private void printFirstParticipants() {
@@ -80,8 +90,7 @@ public class StudyDashboard {
 
     private GHRepository getGhRepository() throws IOException {
         GitHub gitHub = GitHub.connect();
-        GHRepository repository = gitHub.getRepository("whiteship/live-study");
-        return repository;
+        return gitHub.getRepository("whiteship/live-study");
     }
 
     private Participant findParticipant(String username, List<Participant> participants) {
