@@ -1,10 +1,5 @@
 package me.whiteship.refactoring._03_long_function._08_introdce_parameter_object;
 
-import org.kohsuke.github.GHIssue;
-import org.kohsuke.github.GHIssueComment;
-import org.kohsuke.github.GHRepository;
-import org.kohsuke.github.GitHub;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,11 +9,21 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.kohsuke.github.GHIssue;
+import org.kohsuke.github.GHIssueComment;
+import org.kohsuke.github.GHRepository;
+import org.kohsuke.github.GitHub;
 
 public class StudyDashboard {
 
+    private final int totalNumberOfEvents;
+
+    public StudyDashboard(int totalNumberOfEvents) {
+        this.totalNumberOfEvents = totalNumberOfEvents;
+    }
+
     public static void main(String[] args) throws IOException, InterruptedException {
-        StudyDashboard studyDashboard = new StudyDashboard();
+        StudyDashboard studyDashboard = new StudyDashboard(15);
         studyDashboard.print();
     }
 
@@ -27,11 +32,10 @@ public class StudyDashboard {
         GHRepository repository = gitHub.getRepository("whiteship/live-study");
         List<Participant> participants = new CopyOnWriteArrayList<>();
 
-        int totalNumberOfEvents = 15;
         ExecutorService service = Executors.newFixedThreadPool(8);
-        CountDownLatch latch = new CountDownLatch(totalNumberOfEvents);
+        CountDownLatch latch = new CountDownLatch(this.totalNumberOfEvents);
 
-        for (int index = 1 ; index <= totalNumberOfEvents ; index++) {
+        for (int index = 1 ; index <= this.totalNumberOfEvents ; index++) {
             int eventId = index;
             service.execute(new Runnable() {
                 @Override
@@ -66,43 +70,42 @@ public class StudyDashboard {
         service.shutdown();
 
         try (FileWriter fileWriter = new FileWriter("participants.md");
-             PrintWriter writer = new PrintWriter(fileWriter)) {
+            PrintWriter writer = new PrintWriter(fileWriter)) {
             participants.sort(Comparator.comparing(Participant::username));
 
-            writer.print(header(totalNumberOfEvents, participants.size()));
+            writer.print(header(participants.size()));
 
             participants.forEach(p -> {
-                String markdownForHomework = getMarkdownForParticipant(totalNumberOfEvents, p);
+                String markdownForHomework = getMarkdownForParticipant(p);
                 writer.print(markdownForHomework);
             });
         }
     }
 
-    private double getRate(int totalNumberOfEvents, Participant p) {
+    private double getRate(Participant p) {
         long count = p.homework().values().stream()
                 .filter(v -> v == true)
                 .count();
-        double rate = count * 100 / totalNumberOfEvents;
-        return rate;
+        return (double) (count * 100) / this.totalNumberOfEvents;
     }
 
-    private String getMarkdownForParticipant(int totalNumberOfEvents, Participant p) {
-        return String.format("| %s %s | %.2f%% |\n", p.username(), checkMark(p, totalNumberOfEvents), getRate(totalNumberOfEvents, p));
+    private String getMarkdownForParticipant(Participant p) {
+        return String.format("| %s %s | %.2f%% |\n", p.username(), checkMark(p), getRate(p));
     }
 
     /**
      * | 참여자 (420) | 1주차 | 2주차 | 3주차 | 참석율 |
      * | --- | --- | --- | --- | --- |
      */
-    private String header(int totalNumberOfEvents, int totalNumberOfParticipants) {
+    private String header(int totalNumberOfParticipants) {
         StringBuilder header = new StringBuilder(String.format("| 참여자 (%d) |", totalNumberOfParticipants));
 
-        for (int index = 1; index <= totalNumberOfEvents; index++) {
+        for (int index = 1; index <= this.totalNumberOfEvents; index++) {
             header.append(String.format(" %d주차 |", index));
         }
         header.append(" 참석율 |\n");
 
-        header.append("| --- ".repeat(Math.max(0, totalNumberOfEvents + 2)));
+        header.append("| --- ".repeat(Math.max(0, this.totalNumberOfEvents + 2)));
         header.append("|\n");
 
         return header.toString();
@@ -111,9 +114,9 @@ public class StudyDashboard {
     /**
      * |:white_check_mark:|:white_check_mark:|:white_check_mark:|:x:|
      */
-    private String checkMark(Participant p, int totalEvents) {
+    private String checkMark(Participant p) {
         StringBuilder line = new StringBuilder();
-        for (int i = 1 ; i <= totalEvents ; i++) {
+        for (int i = 1 ; i <= this.totalNumberOfEvents ; i++) {
             if(p.homework().containsKey(i) && p.homework().get(i)) {
                 line.append("|:white_check_mark:");
             } else {
