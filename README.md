@@ -203,7 +203,8 @@ oauth=GITHUB_PERSONAL_ACCESS_TOKEN
         - 복잡한 조건식을 상속과 다형성을 이용해 코드로 명확하게 분리하기
         - case별로 클래스를 만들어 **공통 switch 로직의 중복**을 없앨 수 있음
     
-44. 반복되는 switch문
+12. 반복되는 switch문 (Repeated Switches)
+    - [Switch Expression in Java 14](https://velog.io/@nunddu/Java-Switch-Expression-in-Java-14)
 
 45. 반복문
     1. 반복문을 파이프라인으로 바꾸기
