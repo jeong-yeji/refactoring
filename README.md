@@ -206,9 +206,12 @@ oauth=GITHUB_PERSONAL_ACCESS_TOKEN
 12. 반복되는 switch문 (Repeated Switches)
     - [Switch Expression in Java 14](https://velog.io/@nunddu/Java-Switch-Expression-in-Java-14)
 
-45. 반복문
-    1. 반복문을 파이프라인으로 바꾸기
-    
+13. 반복문 (Loops)
+    1. 반복문을 파이프라인으로 바꾸기 (Replace Loop with Pipelines)
+        - Collection Pipeline : Java의 Stream, C#의 LINQ
+        - `filter` : 전달받은 조건의 true에 해당하는 데이터만 다음 오퍼레이션으로 전달
+        - `map` : 전달받은 함수를 사용해 입력값을 원하는 출력값으로 변환해 다음 오퍼레이션으로 전
+
 47. 성의없는 요소
     1. 계층 합치기
     
