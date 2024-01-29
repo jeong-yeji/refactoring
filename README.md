@@ -223,8 +223,15 @@ oauth=GITHUB_PERSONAL_ACCESS_TOKEN
     1. 죽은 코드 제거하기 (Remove Dead Code)
         - 테스트 코드에서만 사용하는 코드 제거하기
         - 실제로 나중에 필요해질 코드라고 지금 사용하지 않는다면 주석으로 처리하는게 아니라 삭제하고 버전 관리 시스템 이용하기
-51. 임시 필드
-    1. 특이 케이스 추가하기
+
+16. 임시 필드 (Temporary Field)
+    1. 특이 케이스 추가하기 (Introduce Special Case)
+        - 특정 경우에만 값이 설정되거나 변경되는 로직이 반복되는 경우 특이 케이스를 클래스로 추출하기
+        - **Null Object Pattern**
+            - `null`인 경우를 별도의 클래스로 추출
+            - `NullPointerException` 방지
+            - null 값을 비교하는 중복 코드 제거
+            - [참고 1](https://johngrib.github.io/wiki/pattern/null-object/) | [참고 2](https://bb-library.tistory.com/207)
     
 53. 메시지 체인
     1. 위임 숨기기
