@@ -233,8 +233,14 @@ oauth=GITHUB_PERSONAL_ACCESS_TOKEN
             - null 값을 비교하는 중복 코드 제거
             - [참고 1](https://johngrib.github.io/wiki/pattern/null-object/) | [참고 2](https://bb-library.tistory.com/207)
     
-53. 메시지 체인
-    1. 위임 숨기기
+17. 메시지 체인 (Message Chains)
+    - 레퍼런스를 따로 계속 메소드 호출이 이어지는 코드 (`this.a.getB().getC().getD()`)
+    - 해당 코드의 클라이언트가 코드 체인을 전부 이해해야함
+    - 체인 중 일부가 변경된다면 클라이언트의 코드를 변경해야함
+    - 클라이언트가 최소한의 정보만 알고 코드를 알 수 있도록 하기
+    1. 위임 숨기기 (Hide Delegate)
+         - 메시지 체인 캡슐화하기
+        - `person.department().manager();` -> `person.getManager();`
     
 55. 중재자
     1. 중재자 제거하기
