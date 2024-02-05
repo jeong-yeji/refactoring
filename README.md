@@ -283,7 +283,9 @@ oauth=GITHUB_PERSONAL_ACCESS_TOKEN
         - 여기서 말하는 레코드는 'public 필드로 구성된 데이터 클래스'
         - 가변이면 getter/setter 이용, 불변이면 데이터 클래스 사용
     
-65. 상속 포기
+23. 상속 포기 (Refused Bequest)
+    - 슈퍼 클래스의 데이터/메소드를 서브 클래스에서 사용하지 않는 경우
+    - pull down method/field, 상속을 위임으로 교체하기
 
 66. 주석
     1. 어셔션 추가하기
