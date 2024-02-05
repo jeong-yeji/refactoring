@@ -242,7 +242,7 @@ oauth=GITHUB_PERSONAL_ACCESS_TOKEN
         - 메시지 체인 캡슐화하기
         - `person.department().manager();` -> `person.getManager();`
     
-55. 중재자 (Middle Man)
+18. 중재자 (Middle Man)
     - 클래스의 메소드가 대부분 다른 클래스로 메소드 호출을 위임한다면 중재자를 제거하고 클라이언트가 해당 클래스를 사용하도록 리팩토링 가능
     1. 중재자 제거하기 (Remove Middle Man)
         - <> 위임 숨기기
@@ -260,7 +260,10 @@ oauth=GITHUB_PERSONAL_ACCESS_TOKEN
         - 위임을 사용해 여러 다른 객체로 위임 가능
         - 인터페이스를 만들어 의존성을 줄일 수 있음 (느슨한 결합)
     
-59. 내부자 거래
+19. 내부자 거래 (Insider Trading)
+    - 높은 결합도(coupling)
+    - 다른 모듈의 코드를 너무 많이 가져와서 사용하는 경우
+    - 함수/필드 옮기기, 위임 숨기기, 상속을 위임으로 바꾸기
 
 60. 거대한 클래스
     1. 슈퍼클래스 추출하기
