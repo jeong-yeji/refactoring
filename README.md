@@ -287,8 +287,15 @@ oauth=GITHUB_PERSONAL_ACCESS_TOKEN
     - 슈퍼 클래스의 데이터/메소드를 서브 클래스에서 사용하지 않는 경우
     - pull down method/field, 상속을 위임으로 교체하기
 
-66. 주석
-    1. 어셔션 추가하기
+24. 주석 (Comments)
+    1. 어셔션 추가하기 (Introduce Assertion)
+        - 기본적으로 가정하는 조건을 명시적으로 작성
+        - Assertion은 항상 `true`를 기대하는 조건을 표현
+            - pre-condition, post-condition 모두 작성 가능 
+        - Assertion이 없어도 프로그램이 동작해야 함
+            - 프로그래밍적으로 반드시 확인해야하는 조건은 if, switch문으로 확인
+            - 자바에서는 컴파일 옵션으로 assert문 사용하지 않도록 설정 가능
+              - `-ea` : enable assertion. 이 옵션을 주지 않으면 assertion 실행되지 않음
     
 68. 리팩토링 카탈로그
     1. 기본 기술
